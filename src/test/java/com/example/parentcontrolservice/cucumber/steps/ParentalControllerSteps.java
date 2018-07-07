@@ -24,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(loader = SpringBootContextLoader.class, classes = ParentalControlServiceAT.class)
 public final class ParentalControllerSteps implements En{
 
+  public static final String PARENTAL_CONTROL_QUERY = "$.parentalControlLevel";
   // TODO encapsulate in world
   @Autowired
   MockMvc mockMvc;
@@ -49,7 +50,7 @@ public final class ParentalControllerSteps implements En{
     });
 
     Then("she will not be permitted to watch it", () -> {
-          world.getResponse().andExpect(jsonPath("$.viewable", is(false)));
+          world.getResponse().andExpect(jsonPath(PARENTAL_CONTROL_QUERY, is(false)));
     });
   }
 
