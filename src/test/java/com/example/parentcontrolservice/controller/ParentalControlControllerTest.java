@@ -2,15 +2,21 @@ package com.example.parentcontrolservice.controller;
 
 import com.example.parentcontrolservice.cucumber.model.APIShape;
 import com.example.parentcontrolservice.cucumber.model.TestableParentalControlLevel;
+import com.example.parentcontrolservice.domain.ParentalControlDecision;
+import com.example.parentcontrolservice.domain.ParentalControlLevel;
+import com.example.parentcontrolservice.service.MovieFilteringService;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 
+import static com.example.parentcontrolservice.cucumber.model.APIShape.PARENTAL_CONTROL_QUERY;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,8 +25,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * Tests the ParentalControlController
  */
 @RunWith(SpringRunner.class)
-@WebMvcTest
+@WebMvcTest(ParentalControlController.class)
 public class ParentalControlControllerTest {
+  @MockBean
+  MovieFilteringService movieFilteringService;
+
   @Autowired
   MockMvc mockMvc;
 
@@ -35,13 +44,25 @@ public class ParentalControlControllerTest {
   }
 
   @Test
-  public void itShouldNotPermitAChildToWatchARated18Movie() throws Exception {
+  public void itShouldNotPermitAChildToWatchAn18RatedMovie() throws Exception {
+    // Intended to keep test 'assumptions' about correct behaviour clear
     TestableParentalControlLevel preferenceLevel = TestableParentalControlLevel.U;
     TestableParentalControlLevel movieLevel = TestableParentalControlLevel.EIGHTEEN;
     String path = APIShape.serviceUrlFor("Jaws", preferenceLevel);
 
+    // using declarative builder pattern
+    ParentalControlDecision decision = ParentalControlDecision.builder()
+        .customerParentalControlPreference(preferenceLevel.getParentalControlLevel())
+        .movieParentalControl(movieLevel.getParentalControlLevel())
+        .movieIsSuitableForCustomer(false)
+        .build();
+
+    ParentalControlLevel customerPreference = ParentalControlLevel.lookupByRating.get("U");
+    when(movieFilteringService.getMovieRating("Jaws", customerPreference))
+        .thenReturn(decision);
+
     mockMvc.perform(get(path))
-        .andExpect(jsonPath("$.parentalControlLevel", is(false)))
+        .andExpect(jsonPath(PARENTAL_CONTROL_QUERY, is(false)))
         .andExpect(status().isOk());
   }
 }

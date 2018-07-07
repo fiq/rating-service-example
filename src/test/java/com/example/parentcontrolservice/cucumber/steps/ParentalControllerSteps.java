@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootContextLoader;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+
+import static com.example.parentcontrolservice.cucumber.model.APIShape.PARENTAL_CONTROL_QUERY;
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -24,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(loader = SpringBootContextLoader.class, classes = ParentalControlServiceAT.class)
 public final class ParentalControllerSteps implements En{
 
-  public static final String PARENTAL_CONTROL_QUERY = "$.parentalControlLevel";
+
   // TODO encapsulate in world
   @Autowired
   MockMvc mockMvc;
