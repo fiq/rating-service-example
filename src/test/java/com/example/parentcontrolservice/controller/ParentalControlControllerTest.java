@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @WebMvcTest(ParentalControlController.class)
 public class ParentalControlControllerTest {
+  public static final String JAWS = "Jaws";
   @MockBean
   MovieFilteringService movieFilteringService;
 
@@ -48,7 +49,7 @@ public class ParentalControlControllerTest {
     // Intended to keep test 'assumptions' about correct behaviour clear
     TestableParentalControlLevel preferenceLevel = TestableParentalControlLevel.U;
     TestableParentalControlLevel movieLevel = TestableParentalControlLevel.EIGHTEEN;
-    String path = APIShape.serviceUrlFor("Jaws", preferenceLevel);
+    String path = APIShape.serviceUrlFor(JAWS, preferenceLevel);
 
     // using declarative builder pattern
     ParentalControlDecision decision = ParentalControlDecision.builder()
@@ -57,8 +58,10 @@ public class ParentalControlControllerTest {
         .movieIsSuitableForCustomer(false)
         .build();
 
-    ParentalControlLevel customerPreference = ParentalControlLevel.lookupByRating.get("U");
-    when(movieFilteringService.getMovieRating("Jaws", customerPreference))
+    ParentalControlLevel customerPreference =
+        ParentalControlLevel.lookupByRating.get( preferenceLevel.getParentalControlLevel() );
+
+    when(movieFilteringService.getMovieRating(JAWS, customerPreference))
         .thenReturn(decision);
 
     mockMvc.perform(get(path))
