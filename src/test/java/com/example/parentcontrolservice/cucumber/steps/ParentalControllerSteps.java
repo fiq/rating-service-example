@@ -20,6 +20,7 @@ public class ParentalControllerSteps implements En{
 
     Given("Jaws has a parental control level of (.+)", (String parentalControlLevel) -> {
       TestableParentalControlLevel movieLevel = TestableParentalControlLevel.lookupByRating.get(parentalControlLevel);
+      //TODO handle NPE
       world.setMovieParentalLevel(movieLevel);
     });
 
