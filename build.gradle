@@ -33,6 +33,8 @@ dependencies {
     testCompile('io.cucumber:cucumber-core:3.0.2')
     testCompile('io.cucumber:gherkin:5.0.0')
     testCompile('io.cucumber:cucumber-spring:3.0.2')
+    testCompile('com.jayway.jsonpath:json-path:2.4.0')
+    testCompile('org.hamcrest:hamcrest-all:1.3')
 }
 
 test {
