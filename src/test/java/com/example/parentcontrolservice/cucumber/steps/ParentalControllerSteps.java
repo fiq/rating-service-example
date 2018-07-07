@@ -1,6 +1,7 @@
 package com.example.parentcontrolservice.cucumber.steps;
 
 import com.example.parentcontrolservice.cucumber.World;
+import com.example.parentcontrolservice.cucumber.model.TestableParentalControlLevel;
 import cucumber.api.PendingException;
 import cucumber.api.java8.En;
 
@@ -11,14 +12,15 @@ public class ParentalControllerSteps implements En{
 
   public ParentalControllerSteps (World world) {
     Given("mother has a parental control preference setting of (.+)", (String preferredLevel) -> {
-      System.out.println("IN MOTHER'S SETTING");
-      // Write code here that turns the phrase above into concrete actions
-      throw new PendingException();
+      TestableParentalControlLevel preferenceLevel = TestableParentalControlLevel.lookupByRating.get( preferredLevel );
+
+      //TODO handle NPE
+      world.setParentalLevelPreference(preferenceLevel);
     });
 
     Given("Jaws has a parental control level of (.+)", (String parentalControlLevel) -> {
-      // Write code here that turns the phrase above into concrete actions
-      throw new PendingException();
+      TestableParentalControlLevel movieLevel = TestableParentalControlLevel.lookupByRating.get(parentalControlLevel);
+      world.setMovieParentalLevel(movieLevel);
     });
 
     When("mother attempts to watch Jaws", () -> {
