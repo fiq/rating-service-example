@@ -30,7 +30,10 @@ dependencies {
     testCompile('io.cucumber:cucumber-java:3.0.2')
     testCompile('io.cucumber:cucumber-java8:3.0.2')
     testCompile('io.cucumber:cucumber-junit:3.0.2')
-    testCompile('io.cucumber:cucumber-picocontainer:3.0.2')
+    testCompile('io.cucumber:cucumber-core:3.0.2')
+    testCompile('io.cucumber:gherkin:5.0.0')
+    testCompile('io.cucumber:cucumber-spring:3.0.2')
+
 }
 
 test {
