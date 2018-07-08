@@ -1,7 +1,9 @@
 Feature: Indicate whether a movie should be viewable based on parental control levels
 
-  Scenario Outline: As a customer I don’t want my account to be able to access movies that
+  As a customer I don’t want my account to be able to access movies that
   have a higher parental control level than my current preference setting.
+
+  Scenario Outline: Customer with preferences cannot watch movies with a higher parental control
 
     Given mother has a parental control preference setting of <PREFERENCE>
     And Jaws has a parental control level of <PARENTAL_CONTROL_LEVEL>
