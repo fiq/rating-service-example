@@ -27,19 +27,35 @@ public class MovieFilteringServiceImplTest {
 
   @Test
   public void itShouldNotPermitAnUniversalPreferenceToWatchAn18() {
-    ParentalControlLevel preference = ParentalControlLevel.U;
-    ParentalControlLevel movieParentalControlLevel = ParentalControlLevel.EIGHTEEN;
+    ParentalControlLevel preferenceLevel = ParentalControlLevel.U;
+    ParentalControlLevel movieLevel = ParentalControlLevel.EIGHTEEN;
     String movie = "The Holy Grail";
-    when(movieService.getParentalControlLevel(movie)).thenReturn(movieParentalControlLevel);
+    testViewingDenied(preferenceLevel, movieLevel, movie);
+  }
 
+
+  // TODO codesmells: too many params and uncle-bob doesn't like boolean arguments
+  private void testViewingDenied(ParentalControlLevel preferenceLevel, ParentalControlLevel movieLevel, String movie) {
+    testParentalControlDecision(preferenceLevel, movieLevel, movie, false);
+  }
+
+  private void testParentalControlDecision(ParentalControlLevel preference, ParentalControlLevel movieParentalControlLevel, String movie, Boolean expectedToBeViewable) {
+    when(movieService.getParentalControlLevel(movie)).thenReturn(movieParentalControlLevel);
     ParentalControlDecision decision =
         underTest.getMovieRating(movie, preference);
 
-    // decision
-    assertThat(decision.getMovieIsSuitableForCustomer(), is(false));
+    // test decision
+    assertThat(decision.getMovieIsSuitableForCustomer(), is(expectedToBeViewable));
 
-    // identity tests
-    assertThat(decision.getMovieParentalControl(),is("18"));
-    assertThat(decision.getCustomerParentalControlPreference(),is("U"));
+    // Test contextual data
+    String expectedMovieLevel = movieParentalControlLevel.getParentalControlLevel();
+    String expectedPreferenceLevel = preference.getParentalControlLevel();
+    assertThat(decision.getMovieParentalControl(),is(expectedMovieLevel));
+    assertThat(decision.getCustomerParentalControlPreference(),is(expectedPreferenceLevel));
   }
+
+  public void itShouldPermitViewingOfAMovieAtTheSamePreferenceLevel(){
+
+  }
+
 }
