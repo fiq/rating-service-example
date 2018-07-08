@@ -12,8 +12,8 @@ import org.springframework.stereotype.Service;
  * Conservatively restricts all content to a PC level of 18
  */
 @Service
-@Qualifier("stubMovieService")
-public class MovieSeviceStub implements MovieService {
+@Qualifier("movieServiceStub")
+public class MovieServiceStub implements MovieService {
   @Override
   public ParentalControlLevel getParentalControlLevel(String movie) throws TitleNotFoundException, TechnicalFailureException {
     return ParentalControlLevel.EIGHTEEN;
