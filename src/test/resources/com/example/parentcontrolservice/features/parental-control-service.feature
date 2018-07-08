@@ -32,3 +32,8 @@ Feature: Indicate whether a movie should be viewable based on parental control l
       | U          | U                      |
       | 18         | 18                     |
 
+  Scenario: A customer requesting a non-existant movie should receive an appropriate error
+    Given mother has a parental control preference setting of U
+    And the movie Ferris2 does not exist
+    When mother attempts to watch Ferris2
+    Then she will not be permitted to watch it

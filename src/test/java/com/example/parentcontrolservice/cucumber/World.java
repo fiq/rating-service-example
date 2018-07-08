@@ -14,4 +14,5 @@ public class World {
   TestableParentalControlLevel parentalLevelPreference;
   TestableParentalControlLevel movieParentalLevel;
   ResultActions response;
+  Boolean movieNotFound = false;
 }

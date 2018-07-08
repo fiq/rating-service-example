@@ -7,6 +7,7 @@ import com.example.parentcontrolservice.cucumber.model.APIShape;
 import com.example.parentcontrolservice.cucumber.model.TestableParentalControlLevel;
 import com.example.parentcontrolservice.domain.ParentalControlLevel;
 import com.example.parentcontrolservice.service.MovieService;
+import com.example.parentcontrolservice.service.movieservice.TitleNotFoundException;
 import cucumber.api.java8.En;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -57,6 +58,14 @@ public final class ParentalControllerSteps implements En{
       when(movieService.getParentalControlLevel(movie)).thenReturn(movieLevelFixture);
     });
 
+    Given("the movie (\\w+) does not exist", (String movie) -> {
+      world.setMovieNotFound(true);
+
+      when(movieService.getParentalControlLevel(movie)).thenThrow(
+          new TitleNotFoundException(movie, "Movie not found")
+      );
+    });
+
     When("mother attempts to watch (\\w+)", (String movie) -> {
       TestableParentalControlLevel preferenceLevel = world.getParentalLevelPreference();
       String url = APIShape.serviceUrlFor(movie, preferenceLevel);
@@ -64,7 +73,12 @@ public final class ParentalControllerSteps implements En{
       ResultActions response = mockMvc.perform(get(url));
 
       // check status
-      response.andExpect(status().isOk());
+      if (world.getMovieNotFound()) {
+        response.andExpect(status().isNotFound());
+      } else {
+        response.andExpect(status().isOk());
+      }
+      
       world.setResponse(response);
     });
 
