@@ -4,7 +4,8 @@ Feature: Indicate whether a movie should be viewable based on parental control l
   have a higher parental control level than my current preference setting.
 
   Scenario Outline: Customer with parental control preferences(<PREFERENCE>) cannot watch movies with a higher parental control(<PARENTAL_CONTROL_LEVEL>)
-    Given mother has a parental control preference setting of <PREFERENCE>
+    Given mother is a customer
+    And mother has a parental control preference setting of <PREFERENCE>
     And Jaws has a parental control level of <PARENTAL_CONTROL_LEVEL>
     When mother attempts to watch Jaws
     Then she will not be permitted to watch it
@@ -19,7 +20,8 @@ Feature: Indicate whether a movie should be viewable based on parental control l
       | 15         | 18                     |
 
   Scenario Outline: Customer with a preference of <PREFERENCE> can watch movies with an encompassed parental control of (<PARENTAL_CONTROL_LEVEL>)
-    Given mother has a parental control preference setting of <PREFERENCE>
+    Given mother is a customer
+    And mother has a parental control preference setting of <PREFERENCE>
     And Exorcist has a parental control level of <PARENTAL_CONTROL_LEVEL>
     When mother attempts to watch Exorcist
     Then she will be permitted to watch it
@@ -32,8 +34,14 @@ Feature: Indicate whether a movie should be viewable based on parental control l
       | U          | U                      |
       | 18         | 18                     |
 
-  Scenario: A customer requesting a non-existant movie should receive an appropriate error
-    Given mother has a parental control preference setting of U
+  Scenario: A customer requesting a non-existent movie should receive an appropriate error
+    Given mother is a customer
     And the movie Ferris2 does not exist
     When mother attempts to watch Ferris2
+    Then she will not be permitted to watch it
+
+  Scenario: Customers will not be permitted to view videos when the MovieService presents a technical errors
+    Given mother is a customer
+    And Ferris Bueller causes the MovieService technical difficulties
+    When mother attempts to watch Ferris Beuller
     Then she will not be permitted to watch it

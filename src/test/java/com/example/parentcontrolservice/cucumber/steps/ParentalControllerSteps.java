@@ -7,6 +7,7 @@ import com.example.parentcontrolservice.cucumber.model.APIShape;
 import com.example.parentcontrolservice.cucumber.model.TestableParentalControlLevel;
 import com.example.parentcontrolservice.domain.ParentalControlLevel;
 import com.example.parentcontrolservice.service.MovieService;
+import com.example.parentcontrolservice.service.movieservice.TechnicalFailureException;
 import com.example.parentcontrolservice.service.movieservice.TitleNotFoundException;
 import cucumber.api.java8.En;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,8 @@ public final class ParentalControllerSteps implements En{
   MockMvc mockMvc;
 
   public ParentalControllerSteps (@Autowired World world) {
+    Given("mother is a customer", () ->{});
+
     Given("mother has a parental control preference setting of (.+)", (String preferredLevel) -> {
       TestableParentalControlLevel preferenceLevel = TestableParentalControlLevel.lookupByRating.get( preferredLevel );
       // TODO handle NPE
@@ -63,6 +66,12 @@ public final class ParentalControllerSteps implements En{
 
       when(movieService.getParentalControlLevel(movie)).thenThrow(
           new TitleNotFoundException(movie, "Movie not found")
+      );
+    });
+
+    Given("^(.*) causes the MovieService technical difficulties", (String movie)-> {
+      when(movieService.getParentalControlLevel(movie)).thenThrow(
+          new TechnicalFailureException(movie, "A technical failure occurred")
       );
     });
 
