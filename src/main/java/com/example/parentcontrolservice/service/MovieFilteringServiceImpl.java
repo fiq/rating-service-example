@@ -32,9 +32,11 @@ public class MovieFilteringServiceImpl implements MovieFilteringService {
     String preferenceLevel = parentalControlPreference.getParentalControlLevel();
     String movieLevel = movieParentalControl.getParentalControlLevel();
 
+    boolean movieIsSuitableForCustomer = parentalControlPreference.getPriority() >= movieParentalControl.getPriority();
     ParentalControlDecision decision = ParentalControlDecision.builder()
         .customerParentalControlPreference(preferenceLevel)
         .movieParentalControl(movieLevel)
+        .movieIsSuitableForCustomer(movieIsSuitableForCustomer)
         .build();
 
     return decision;

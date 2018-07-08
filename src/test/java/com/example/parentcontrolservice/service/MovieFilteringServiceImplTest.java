@@ -33,13 +33,13 @@ public class MovieFilteringServiceImplTest {
     when(movieService.getParentalControlLevel(movie)).thenReturn(movieParentalControlLevel);
 
     ParentalControlDecision decision =
-        underTest.getMovieRating(movie, movieParentalControlLevel);
+        underTest.getMovieRating(movie, preference);
 
     // decision
     assertThat(decision.getMovieIsSuitableForCustomer(), is(false));
 
     // identity tests
-    assertThat(decision.getMovieParentalControl(),is(movieParentalControlLevel));
-    assertThat(decision.getCustomerParentalControlPreference(),is(preference));
+    assertThat(decision.getMovieParentalControl(),is("18"));
+    assertThat(decision.getCustomerParentalControlPreference(),is("U"));
   }
 }
