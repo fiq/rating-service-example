@@ -75,8 +75,5 @@ public final class ParentalControllerSteps implements En{
     Then("she will be permitted to watch it", () -> {
       world.getResponse().andExpect(jsonPath(PARENTAL_CONTROL_QUERY, is(true)));
     });
-
   }
-
-  ;
 }
