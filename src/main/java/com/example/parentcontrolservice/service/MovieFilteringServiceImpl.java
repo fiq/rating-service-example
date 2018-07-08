@@ -3,7 +3,6 @@ package com.example.parentcontrolservice.service;
 import com.example.parentcontrolservice.domain.ParentalControlDecision;
 import com.example.parentcontrolservice.domain.ParentalControlLevel;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 public class MovieFilteringServiceImpl implements MovieFilteringService {
 
   @Autowired
-  @Qualifier("movieServiceStub")
   private MovieService movieService;
 
   /**

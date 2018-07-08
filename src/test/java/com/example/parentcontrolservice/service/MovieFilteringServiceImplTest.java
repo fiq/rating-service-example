@@ -8,6 +8,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.Mockito.when;
@@ -26,16 +31,52 @@ public class MovieFilteringServiceImplTest {
   MovieFilteringServiceImpl underTest;
 
   @Test
-  public void itShouldNotPermitAnUniversalPreferenceToWatchAn18() {
+  public void itShouldNotPermitACustomerWithUniversalPreferenceToWatchAn18() {
     ParentalControlLevel preferenceLevel = ParentalControlLevel.U;
     ParentalControlLevel movieLevel = ParentalControlLevel.EIGHTEEN;
     String movie = "The Holy Grail";
-    testViewingDenied(preferenceLevel, movieLevel, movie);
+    viewingShouldBeDenied(preferenceLevel, movieLevel, movie);
   }
 
+  @Test
+  public void itShouldPermitACustomerToViewAMovieAtTheSamePreferenceLevel(){
+    ParentalControlLevel preferenceLevel = ParentalControlLevel.U;
+    ParentalControlLevel movieLevel = ParentalControlLevel.U;
+    String movie = "Bambi";
+    viewingShouldBePermitted(preferenceLevel, movieLevel, movie);
+  }
+
+  @Test
+  public void itShouldNotPermitACustomerToViewAMovieAtAHigherControlLevel(){
+    String movie = "Bambi";
+
+    // Non-deterministic values from the enum are sorted by priority
+    List<ParentalControlLevel> parentalControlLevels = Arrays.stream(ParentalControlLevel.values())
+        .sorted(Comparator.comparing(ParentalControlLevel::getPriority).reversed())
+        .collect(Collectors.toList());
+
+    // Remove the first element and compare to the rest
+    ParentalControlLevel preferenceLevel = parentalControlLevels.remove(0);
+
+    parentalControlLevels.stream().forEach(movieLevel -> {
+      viewingShouldBePermitted(preferenceLevel, movieLevel, movie);
+    });
+  }
+
+  @Test
+  public void itShouldPermitACustomerToViewAMovieAtALowerControlLevel(){
+    ParentalControlLevel preferenceLevel = ParentalControlLevel.EIGHTEEN;
+    ParentalControlLevel movieLevel = ParentalControlLevel.U;
+    String movie = "Bambi";
+    viewingShouldBePermitted(preferenceLevel, movieLevel, movie);
+  }
 
   // TODO codesmells: too many params and uncle-bob doesn't like boolean arguments
-  private void testViewingDenied(ParentalControlLevel preferenceLevel, ParentalControlLevel movieLevel, String movie) {
+  private void viewingShouldBePermitted(ParentalControlLevel preferenceLevel, ParentalControlLevel movieLevel, String movie) {
+    testParentalControlDecision(preferenceLevel, movieLevel, movie, true);
+  }
+
+  private void viewingShouldBeDenied(ParentalControlLevel preferenceLevel, ParentalControlLevel movieLevel, String movie) {
     testParentalControlDecision(preferenceLevel, movieLevel, movie, false);
   }
 
@@ -53,9 +94,4 @@ public class MovieFilteringServiceImplTest {
     assertThat(decision.getMovieParentalControl(),is(expectedMovieLevel));
     assertThat(decision.getCustomerParentalControlPreference(),is(expectedPreferenceLevel));
   }
-
-  public void itShouldPermitViewingOfAMovieAtTheSamePreferenceLevel(){
-
-  }
-
 }
