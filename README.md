@@ -17,8 +17,8 @@ control preference.
 
 ## Docker
 
-* docker build and run the image, exposing 8080
-* or docker-compose up and goto localhost:8080
+* ```./gradlew build && docker build .``` and run the image, exposing 8080
+* or ```./gradlew build && docker-compose up``` and goto localhost:8080
 
 ## Gradle
 * ./gradlew bootRun
